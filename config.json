@@ -1,0 +1,16 @@
+{
+  "dest": "my-ipv6-home-address.com",
+  "forward": [
+	{
+	  "prot": "tcp",
+	  "src": {
+		"stack": 4,
+		"port": 32400
+	  },
+	  "dst": {
+		"stack": 6,
+		"port": 32400
+	  }
+	}
+  ]
+}
