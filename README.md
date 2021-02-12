@@ -6,6 +6,13 @@ It supports ipv4/6 and was designed to tunnel from ipv4 to ipv6, but other combi
 
 It supports changing DNS entries (for example dyndns) and will automatically re-start the tunnel with the correct target ip.
 
+As soon as the tunnel starts it will add iptable rules for accepting input traffic for the defined ports. 
+The rules will be removed once terminated. If you don't want that, simply don't run as root. 
+
+## Dependencies
+- Python >=3.6
+- socat binary
+- iptables (optional)
 
 ## Usage
 Edit the sample `config.json`
