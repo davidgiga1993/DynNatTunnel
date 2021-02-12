@@ -5,6 +5,7 @@ import os
 import signal
 import sys
 
+from config.Config import Config
 from util.DnsWatcher import DnsWatcher
 from util.Loggable import Loggable
 from util.Tunnel import Tunnel
@@ -22,20 +23,20 @@ def main():
         raise FileNotFoundError('Config not found: ' + str(args.config))
 
     with open(args.config) as file:
-        config = json.load(file)
+        config = Config(json.load(file))
 
-    dest_addr = config['dest']
     dns_watcher = DnsWatcher()
     tunnels = []
-    for item in config['forward']:
-        tunnels.append(Tunnel(item, dest_addr, dns_watcher))
+    for forwarder in config.forwarders:
+        tunnels.append(Tunnel(forwarder, config.dest_addr, dns_watcher))
 
     for tunnel in tunnels:
         tunnel.start()
 
     def signal_handler(sig, frame):
-        for tunnel in tunnels:
-            tunnel.stop()
+        # Gracefully terminate to revert the iptables config
+        for t in tunnels:
+            t.stop()
         sys.exit(0)
 
     signal.signal(signal.SIGINT, signal_handler)

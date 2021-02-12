@@ -7,7 +7,7 @@
 		"stack": 4,
 		"port": 32400
 	  },
-	  "dst": {
+	  "dest": {
 		"stack": 6,
 		"port": 32400
 	  }
