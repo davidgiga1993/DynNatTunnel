@@ -24,7 +24,7 @@ class Iptables(Loggable):
         self._stack = stack
 
     def get_entry(self, prot: str, port: int) -> Optional[Rule]:
-        args = ['-L', 'input', '-n', '--line-number']
+        args = ['-L', 'INPUT', '-n', '--line-number']
         out = self._execute(args)
         rules = self._parse_table(out)
         for rule in rules:
