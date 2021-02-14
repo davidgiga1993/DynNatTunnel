@@ -1,5 +1,6 @@
 import socket
 from abc import abstractmethod
+from time import sleep
 from typing import List, Optional, Callable, Dict
 
 from util.Loggable import Loggable
@@ -14,8 +15,8 @@ class EntryListener:
 class EntryWatch(Loggable):
     def __init__(self, address: str, stack: int):
         super().__init__('EntryWatch')
-        self._address = address
-        self._stack = socket.AF_INET6 if stack == 6 else socket.AF_INET
+        self._address: str = address
+        self._stack: int = socket.AF_INET6 if stack == 6 else socket.AF_INET
         self.listener: List[Callable] = []
 
         self._last_ip: Optional[str] = None
@@ -67,8 +68,12 @@ class DnsWatcher:
     Watches for DNS changes
     """
 
-    def __init__(self):
-        self._addrs: Dict[str, EntryWatch] = {}
+    _check: bool = False
+    """
+    Indicates if the dns watch is running
+    """
+
+    _addrs: Dict[str, EntryWatch] = {}
 
     def add(self, addr: str, stack: int, callback_method: Callable) -> EntryWatch:
         """
@@ -94,3 +99,16 @@ class DnsWatcher:
         """
         for watchers in self._addrs.values():
             watchers.check()
+
+    def stop(self):
+        self._check = False
+
+    def wait_for_changes(self):
+        """
+        Checks for DNS changes in regular intervals.
+        This call blocks until "stop" is called
+        """
+        self._check = True
+        while self._check:
+            self.check()
+            sleep(60)

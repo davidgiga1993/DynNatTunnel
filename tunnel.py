@@ -35,12 +35,15 @@ def main():
 
     def signal_handler(sig, frame):
         # Gracefully terminate to revert the iptables config
+        dns_watcher.stop()
         for t in tunnels:
             t.stop()
         sys.exit(0)
 
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
+
+    dns_watcher.wait_for_changes()
 
 
 if __name__ == '__main__':
